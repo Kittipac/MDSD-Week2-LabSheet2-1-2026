@@ -1079,10 +1079,72 @@ void main() {
 
 **บันทึกผลการทดลอง: บันทึกโค้ดคำสั่งที่ได้**
 ```dart
-// บันทึกโค้ดในส่วนนี้
+
+
+class BankAccount {
+  final String ownerName;
+  double _balance;
+
+  BankAccount({
+    required this.ownerName,
+    double initial = 0,
+  }) : _balance = initial;
+
+  double get balance => _balance;
+
+  void updateBalance(double value) {
+    _balance = value;
+  }
+
+  bool withdraw(double amount) {
+    if (amount <= 0 || amount > _balance) {
+      print("ยอดเงินไม่เพียงพอ");
+      return false;
+    }
+
+    _balance -= amount;
+    print("ถอนเงิน $amount บาท สำเร็จ");
+    return true;
+  }
+}
+
+class CheckingAccount extends BankAccount {
+  CheckingAccount({
+    required super.ownerName,
+    super.initial,
+  });
+
+  @override
+  bool withdraw(double amount) {
+    if (amount <= 0) {
+      print("จำนวนเงินต้องมากกว่า 0 บาท");
+      return false;
+    }
+
+    double overdraft = amount - balance;
+
+    if (overdraft > 500) {
+      print("ไม่สามารถถอนเงินได้ เกินวงเงิน Overdraft");
+      return false;
+    }
+
+    if (overdraft > 0) {
+      updateBalance(balance - amount - 50);
+      print("ถอนเงิน $amount บาท สำเร็จ");
+      print("ใช้ Overdraft $overdraft บาท");
+      print("หักค่าธรรมเนียม 50 บาท");
+      return true;
+    }
+
+    return super.withdraw(amount);
+  }
+}
+
 
 
 ```
+
+
 ---
 
 ## ส่วนที่ 4 — ทฤษฎีและการทดลอง: Async/Await และ Future
