@@ -625,10 +625,117 @@ void main() {
 
 **บันทึกผลการทดลอง: บันทึกโค้ดคำสั่งที่ได้**
 ```dart
-// บันทึกโค้ดในส่วนนี้
+
+// ข้อมูลนักศึกษา
+List<Map<String, dynamic>> students = [
+  {"name": "สมชาย", "gpa": 3.75, "year": 3, "faculty": "วิศวกรรม"},
+  {"name": "สมหญิง", "gpa": 2.50, "year": 1, "faculty": "วิทยาศาสตร์"},
+  {"name": "สมศักดิ์", "gpa": 3.10, "year": 2, "faculty": "วิศวกรรม"},
+  {"name": "สมใจ", "gpa": 1.80, "year": 4, "faculty": "บริหาร"},
+  {"name": "สมปอง", "gpa": 3.50, "year": 2, "faculty": "วิทยาศาสตร์"},
+  {"name": "สมศรี", "gpa": 2.90, "year": 3, "faculty": "บริหาร"},
+];
+
+// 1. Function ค้นหานักศึกษาที่มี GPA สูงสุดในคณะที่ระบุ
+String findTopStudentByFaculty(List students, String faculty) {
+  var facultyStudents = students
+      .where((s) => s["faculty"] == faculty)
+      .toList();
+
+  if (facultyStudents.isEmpty) {
+    return "ไม่พบข้อมูลนักศึกษาในคณะ $faculty";
+  }
+
+  var topStudent = facultyStudents.reduce(
+    (a, b) => a["gpa"] > b["gpa"] ? a : b,
+  );
+
+  return "${topStudent["name"]} (GPA: ${topStudent["gpa"]})";
+}
+
+// 2. Function จัดกลุ่มนักศึกษาตามคณะ
+Map<String, List> groupByFaculty(List students) {
+  Map<String, List> groups = {};
+
+  for (var student in students) {
+    String faculty = student["faculty"];
+
+    if (!groups.containsKey(faculty)) {
+      groups[faculty] = [];
+    }
+
+    groups[faculty]!.add(student);
+  }
+
+  return groups;
+}
+
+void main() {
+  // ทดสอบข้อ 1
+  print("=== นักศึกษาที่มี GPA สูงสุดในแต่ละคณะ ===");
+  print("วิศวกรรม: ${findTopStudentByFaculty(students, "วิศวกรรม")}");
+  print("วิทยาศาสตร์: ${findTopStudentByFaculty(students, "วิทยาศาสตร์")}");
+  print("บริหาร: ${findTopStudentByFaculty(students, "บริหาร")}");
+
+  // ทดสอบข้อ 2
+  print("\n=== จัดกลุ่มนักศึกษาตามคณะ ===");
+  var groupedStudents = groupByFaculty(students);
+
+  groupedStudents.forEach((faculty, members) {
+    print("\nคณะ $faculty");
+    for (var student in members) {
+      print("  ${student["name"]}: GPA ${student["gpa"]}");
+    }
+  });
+
+  // ทดสอบข้อ 3
+  print("\n=== นักศึกษาที่มี GPA สูงสุด 3 อันดับแรก ===");
+
+  // สร้าง List ใหม่เพื่อไม่ให้กระทบข้อมูลเดิม
+  var sortedStudents = List<Map<String, dynamic>>.from(students);
+
+  // เรียง GPA จากมากไปน้อย
+  sortedStudents.sort(
+    (a, b) => b["gpa"].compareTo(a["gpa"]),
+  );
+
+  // แสดงผล 3 อันดับแรก
+  for (int i = 0; i < 3; i++) {
+    var student = sortedStudents[i];
+    print(
+      "อันดับ ${i + 1}: ${student["name"]} "
+      "(คณะ ${student["faculty"]}, GPA ${student["gpa"]})",
+    );
+  }
+}
 
 
 ```
+**ผลลัพธ์ที่ได้จากการรันโปรแกรม :**
+=== นักศึกษาที่มี GPA สูงสุดในแต่ละคณะ ===
+วิศวกรรม: สมชาย (GPA: 3.75)
+วิทยาศาสตร์: สมปอง (GPA: 3.5)
+บริหาร: สมศรี (GPA: 2.9)
+
+=== จัดกลุ่มนักศึกษาตามคณะ ===
+
+คณะ วิศวกรรม
+  สมชาย: GPA 3.75
+  สมศักดิ์: GPA 3.1
+
+คณะ วิทยาศาสตร์
+  สมหญิง: GPA 2.5
+  สมปอง: GPA 3.5
+
+คณะ บริหาร
+  สมใจ: GPA 1.8
+  สมศรี: GPA 2.9
+
+=== นักศึกษาที่มี GPA สูงสุด 3 อันดับแรก ===
+อันดับ 1: สมชาย (คณะ วิศวกรรม, GPA 3.75)
+อันดับ 2: สมปอง (คณะ วิทยาศาสตร์, GPA 3.5)
+อันดับ 3: สมศักดิ์ (คณะ วิศวกรรม, GPA 3.1)
+
 ---
 
 ## ส่วนที่ 3 — ทฤษฎีและการทดลอง: OOP
