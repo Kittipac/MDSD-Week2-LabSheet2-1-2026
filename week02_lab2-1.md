@@ -273,10 +273,65 @@ void main() {
 ```
 **บันทึกผลการทดลอง: บันทึกโค้ดคำสั่งที่ได้**
 ```dart
-// บันทึกโค้ดในส่วนนี้
+
+void main() {
+  // รายวิชาและคะแนน
+  List<String> courses = ["Mobile Dev", "Web Dev", "AI"];
+  Map<String, int> courseScores = {
+    "Mobile Dev": 90,
+    "Web Dev": 85,
+    "AI": 92,
+  };
+
+  // 1. เพิ่มรายวิชา Database
+  courses.add("Database");
+  courseScores["Database"] = 88;
+
+  print("=== รายวิชาและคะแนน ===");
+  for (int i = 0; i < courses.length; i++) {
+    String course = courses[i];
+    print("${i + 1}. $course: ${courseScores[course]} คะแนน");
+  }
+
+  // 2. หาวิชาที่มีคะแนนสูงสุด
+  var topCourse = courseScores.entries.reduce(
+    (a, b) => a.value > b.value ? a : b,
+  );
+
+  print("\nวิชาที่ได้คะแนนสูงสุด: "
+      "${topCourse.key} (${topCourse.value} คะแนน)");
+
+  // 3. นับจำนวนวิชาที่ได้คะแนนตั้งแต่ 90 ขึ้นไป
+  int highScoreCount = courseScores.values
+      .where((score) => score >= 90)
+      .length;
+
+  print("จำนวนวิชาที่ได้ >= 90: $highScoreCount วิชา");
+
+  // 4. สร้าง Set เก็บวิชาที่ได้คะแนนตั้งแต่ 80 ขึ้นไป
+  Set<String> passedCourses = courseScores.entries
+      .where((entry) => entry.value >= 80)
+      .map((entry) => entry.key)
+      .toSet();
+
+  print("วิชาที่ผ่าน: $passedCourses");
+}
+
 
 
 ```
+
+**ผลลัพธ์ที่ได้จากการรันโปรแกรม :**
+=== รายวิชาและคะแนน ===
+1. Mobile Dev: 90 คะแนน
+2. Web Dev: 85 คะแนน
+3. AI: 92 คะแนน
+4. Database: 88 คะแนน
+
+วิชาที่ได้คะแนนสูงสุด: AI (92 คะแนน)
+จำนวนวิชาที่ได้ >= 90: 2 วิชา
+วิชาที่ผ่าน: {Mobile Dev, Web Dev, AI, Database}
+
 ---
 
 ## ส่วนที่ 2 — ทฤษฎีและการทดลอง: Functions
